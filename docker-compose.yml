@@ -1,0 +1,25 @@
+---
+version: "2"
+services:
+  db:
+    build:
+      context: .
+      dockerfile: postgresql.dockerfile
+    env_file: ./secrets.env
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+  main:
+    image: pajinek/docker-spacewalk:2.7
+    env_file: ./secrets.env
+    environment:
+      - HOST_HOSTNAME=test
+    links:
+      - db:postgresql-host
+    volumes:
+      - ./data/main/sattelite:/var/satellite
+      - ./data/main/ssl-build:/root/ssl-build
+    ports:
+      - 69:69
+      - 80:80
+      - 443:443
+      - 5222:5222
